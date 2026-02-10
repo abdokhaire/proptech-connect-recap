@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropTech Connect 2026 — Event Recap & Data Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0A1628;
+            --navy-light: #0F2035;
+            --navy-card: #121E30;
+            --cyan: #00D4FF;
+            --cyan-glow: rgba(0, 212, 255, 0.15);
+            --gold: #FFB800;
+            --gold-glow: rgba(255, 184, 0, 0.15);
+            --green: #00FF88;
+            --green-glow: rgba(0, 255, 136, 0.15);
+            --purple: #8B5CF6;
+            --purple-glow: rgba(139, 92, 246, 0.15);
+            --red: #FF4D6A;
+            --white: #FFFFFF;
+            --grey: #94A3B8;
+            --grey-dark: #475569;
+            --border: rgba(255, 255, 255, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ─── Animated BG ─── */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow-1, .bg-glow-2 {
+            position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
+        }
+        .bg-glow-1 { width: 600px; height: 600px; background: rgba(0,212,255,0.06); top: -200px; right: -200px; }
+        .bg-glow-2 { width: 500px; height: 500px; background: rgba(139,92,246,0.05); bottom: -100px; left: -150px; }
+
+        /* ─── Hero ─── */
+        .hero {
+            position: relative; z-index: 1;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+            padding: 60px 24px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(0,212,255,0.08) 0%, transparent 70%);
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 20px; border-radius: 100px;
+            background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
+            font-size: 13px; font-weight: 500; color: var(--cyan);
+            letter-spacing: 1.5px; text-transform: uppercase;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease;
+        }
+        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: pulse 2s infinite; }
+        .hero h1 {
+            font-size: clamp(42px, 7vw, 88px);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--cyan), var(--purple), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .subtitle {
+            font-size: clamp(16px, 2.2vw, 22px);
+            color: var(--grey);
+            max-width: 600px;
+            font-weight: 400;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        /* ─── Hero Stats ─── */
+        .hero-stats {
+            display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
+            animation: fadeInUp 0.8s ease 0.35s both;
+        }
+        .hero-stat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px 36px;
+            text-align: center;
+            min-width: 180px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .hero-stat:hover { transform: translateY(-4px); border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.05); }
+        .hero-stat .number {
+            font-size: 44px; font-weight: 800; line-height: 1;
+            margin-bottom: 6px;
+        }
+        .hero-stat:nth-child(1) .number { color: var(--cyan); }
+        .hero-stat:nth-child(2) .number { color: var(--gold); }
+        .hero-stat:nth-child(3) .number { color: var(--green); }
+        .hero-stat:nth-child(4) .number { color: var(--purple); }
+        .hero-stat .label {
+            font-size: 13px; font-weight: 500; color: var(--grey);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* ─── Scroll indicator ─── */
+        .scroll-indicator {
+            margin-top: 60px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+        .scroll-indicator span { font-size: 12px; color: var(--grey-dark); text-transform: uppercase; letter-spacing: 2px; }
+        .scroll-arrow { width: 20px; height: 20px; border-right: 2px solid var(--grey-dark); border-bottom: 2px solid var(--grey-dark); transform: rotate(45deg); animation: scrollBounce 2s infinite; }
+
+        /* ─── Sections ─── */
+        .section {
+            position: relative; z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 100px 24px;
+        }
+        .section-header {
+            margin-bottom: 56px;
+        }
+        .section-tag {
+            font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--cyan); margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 48px); font-weight: 800;
+            line-height: 1.15; letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            font-size: 17px; color: var(--grey); max-width: 640px; line-height: 1.7;
+        }
+
+        /* ─── Cards Grid ─── */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+        .card {
+            background: var(--navy-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+        .card:hover { border-color: rgba(0,212,255,0.2); transform: translateY(-2px); }
+        .card-full { grid-column: 1 / -1; }
+
+        .card-title {
+            font-size: 15px; font-weight: 600; color: var(--grey);
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .card-title .icon {
+            width: 32px; height: 32px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+        .icon-cyan { background: var(--cyan-glow); }
+        .icon-gold { background: var(--gold-glow); }
+        .icon-green { background: var(--green-glow); }
+        .icon-purple { background: var(--purple-glow); }
+
+        /* ─── Chart containers ─── */
+        .chart-container {
+            position: relative;
+            width: 100%;
+        }
+        .chart-container canvas {
+            width: 100% !important;
+        }
+
+        /* ─── World Map ─── */
+        .map-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2.2 / 1;
+            background: #0A1628;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .map-dot {
+            fill: var(--cyan);
+            opacity: 0.8;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .map-dot:hover { opacity: 1; filter: drop-shadow(0 0 8px var(--cyan)); }
+        .map-tooltip {
+            position: absolute;
+            background: rgba(10, 22, 40, 0.95);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            backdrop-filter: blur(12px);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+            white-space: nowrap;
+        }
+        .map-tooltip .country { font-weight: 700; color: var(--cyan); }
+        .map-tooltip .count { color: var(--white); }
+
+        /* ─── Stat blocks ─── */
+        .stat-row {
+            display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;
+        }
+        .stat-block {
+            flex: 1; min-width: 200px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .stat-block:hover { border-color: rgba(0,212,255,0.2); }
+        .stat-block .big-num {
+            font-size: 36px; font-weight: 800; line-height: 1.1; margin-bottom: 4px;
+        }
+        .stat-block .big-label {
+            font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* ─── Tables ─── */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 4px;
+        }
+        .data-table th {
+            text-align: left; padding: 12px 16px;
+            font-size: 11px; font-weight: 600; color: var(--grey-dark);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table td {
+            padding: 14px 16px; font-size: 14px;
+            background: rgba(255,255,255,0.02);
+            border: none;
+        }
+        .data-table tr td:first-child { border-radius: 10px 0 0 10px; }
+        .data-table tr td:last-child { border-radius: 0 10px 10px 0; }
+        .data-table tr:hover td { background: rgba(0,212,255,0.05); }
+        .rank { color: var(--grey-dark); font-weight: 600; font-size: 12px; }
+        .company-name { font-weight: 600; }
+        .badge {
+            display: inline-block; padding: 3px 10px; border-radius: 6px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-cyan { background: var(--cyan-glow); color: var(--cyan); }
+        .badge-gold { background: var(--gold-glow); color: var(--gold); }
+        .badge-green { background: var(--green-glow); color: var(--green); }
+        .badge-purple { background: var(--purple-glow); color: var(--purple); }
+
+        /* ─── Startup tags ─── */
+        .tag-grid {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;
+        }
+        .tag {
+            padding: 6px 14px; border-radius: 8px;
+            font-size: 13px; font-weight: 500;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .tag:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.06); }
+        .tag-cat {
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            padding: 6px 14px; border-radius: 8px;
+        }
+        .tag-cat-ai { background: var(--purple-glow); color: var(--purple); border: 1px solid rgba(139,92,246,0.3); }
+        .tag-cat-pm { background: var(--cyan-glow); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+        .tag-cat-viz { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(255,184,0,0.3); }
+        .tag-cat-green { background: var(--green-glow); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+        .tag-cat-fin { background: rgba(255,77,106,0.12); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+        .tag-cat-ops { background: rgba(255,255,255,0.06); color: var(--white); border: 1px solid rgba(255,255,255,0.15); }
+        .tag-cat-security { background: rgba(255,140,66,0.12); color: #FF8C42; border: 1px solid rgba(255,140,66,0.3); }
+        .tag-cat-broker { background: rgba(54,214,195,0.12); color: #36D6C3; border: 1px solid rgba(54,214,195,0.3); }
+        .tag-cat-data { background: rgba(252,211,77,0.12); color: #FCD34D; border: 1px solid rgba(252,211,77,0.3); }
+        .tag-cat-construction { background: rgba(232,121,249,0.12); color: #E879F9; border: 1px solid rgba(232,121,249,0.3); }
+        .tag-cat-cloud { background: rgba(96,165,250,0.12); color: #60A5FA; border: 1px solid rgba(96,165,250,0.3); }
+        .tag-cat-dev { background: rgba(251,146,60,0.12); color: #FB923C; border: 1px solid rgba(251,146,60,0.3); }
+        .tag-cat-marketing { background: rgba(244,114,182,0.12); color: #F472B6; border: 1px solid rgba(244,114,182,0.3); }
+        .tag-cat-workspace { background: rgba(167,139,250,0.12); color: #A78BFA; border: 1px solid rgba(167,139,250,0.3); }
+
+        /* ─── Startup cards ─── */
+        .startup-category {
+            margin-bottom: 28px;
+            padding: 24px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        .startup-category:hover { border-color: rgba(255,255,255,0.1); }
+        .startup-category:last-child { margin-bottom: 0; }
+        .cat-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .cat-header .cat-count {
+            font-size: 12px; font-weight: 600; color: var(--grey-dark);
+            background: rgba(255,255,255,0.04);
+            padding: 4px 12px; border-radius: 6px;
+        }
+        .startup-card {
+            display: inline-flex; flex-direction: column;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: default;
+            max-width: 280px;
+        }
+        .startup-card:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.04); transform: translateY(-2px); }
+        .startup-card .s-name { font-size: 13px; font-weight: 600; color: var(--white); }
+        .startup-card .s-desc { font-size: 11px; color: var(--grey-dark); margin-top: 3px; line-height: 1.4; }
+        .startup-grid {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+        }
+
+        /* ─── Category filter tabs ─── */
+        .filter-tabs {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px;
+        }
+        .filter-tab {
+            padding: 8px 16px; border-radius: 10px;
+            font-size: 12px; font-weight: 600;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            cursor: pointer; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            user-select: none;
+        }
+        .filter-tab:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.06); }
+        .filter-tab.active { background: rgba(0,212,255,0.12); border-color: rgba(0,212,255,0.4); color: var(--cyan); }
+
+        /* ─── Startup pie chart ─── */
+        .startup-overview { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+
+        /* ─── Sponsor tier cards ─── */
+        .sponsor-tier {
+            margin-bottom: 28px;
+            padding: 24px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        .sponsor-tier:hover { border-color: rgba(255,255,255,0.1); }
+        .sponsor-tier:last-child { margin-bottom: 0; }
+        .tier-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            padding: 6px 16px; border-radius: 8px; margin-bottom: 16px;
+        }
+        .tier-platinum { background: linear-gradient(135deg, rgba(229,228,226,0.15), rgba(192,192,192,0.08)); color: #E5E4E2; border: 1px solid rgba(229,228,226,0.3); }
+        .tier-gold { background: linear-gradient(135deg, rgba(255,184,0,0.15), rgba(255,184,0,0.06)); color: var(--gold); border: 1px solid rgba(255,184,0,0.3); }
+        .tier-silver { background: linear-gradient(135deg, rgba(148,163,184,0.15), rgba(148,163,184,0.06)); color: var(--grey); border: 1px solid rgba(148,163,184,0.3); }
+        .tier-bronze { background: linear-gradient(135deg, rgba(205,127,50,0.15), rgba(205,127,50,0.06)); color: #CD7F32; border: 1px solid rgba(205,127,50,0.3); }
+        .tier-startup { background: linear-gradient(135deg, rgba(0,255,136,0.12), rgba(0,255,136,0.04)); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+        .sponsor-card {
+            display: inline-flex; flex-direction: column;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: default;
+            min-width: 200px;
+            max-width: 300px;
+        }
+        .sponsor-card:hover { border-color: rgba(255,184,0,0.3); background: rgba(255,184,0,0.04); transform: translateY(-2px); }
+        .sponsor-card .sp-name { font-size: 13px; font-weight: 600; color: var(--white); }
+        .sponsor-card .sp-desc { font-size: 11px; color: var(--grey-dark); margin-top: 3px; line-height: 1.4; }
+        .sponsor-card .sp-count { font-size: 10px; color: var(--grey-dark); margin-top: 4px; opacity: 0.7; }
+        .sponsor-grid {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+        }
+
+        /* ─── Notable company cards ─── */
+        .company-category {
+            margin-bottom: 28px;
+            padding: 24px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        .company-category:hover { border-color: rgba(255,255,255,0.1); }
+        .company-category:last-child { margin-bottom: 0; }
+        .company-card {
+            display: inline-flex; flex-direction: column;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: default;
+            min-width: 180px;
+            max-width: 300px;
+        }
+        .company-card:hover { border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.04); transform: translateY(-2px); }
+        .company-card .c-name { font-size: 13px; font-weight: 600; color: var(--white); }
+        .company-card .c-info { font-size: 11px; color: var(--grey-dark); margin-top: 3px; line-height: 1.4; }
+        .company-card .c-count { font-size: 10px; color: var(--cyan); margin-top: 4px; font-weight: 600; }
+        .company-grid {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+        }
+
+        /* ─── Takeaways ─── */
+        .takeaway-list {
+            display: grid; gap: 16px;
+        }
+        .takeaway {
+            display: flex; align-items: flex-start; gap: 20px;
+            padding: 24px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+        .takeaway:hover { border-color: rgba(0,212,255,0.2); transform: translateX(4px); }
+        .takeaway-num {
+            min-width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            font-size: 18px; font-weight: 800;
+            background: var(--cyan-glow); color: var(--cyan);
+        }
+        .takeaway h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .takeaway p { font-size: 14px; color: var(--grey); line-height: 1.6; }
+
+        /* ─── Footer ─── */
+        .footer {
+            position: relative; z-index: 1;
+            text-align: center;
+            padding: 80px 24px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-text { font-size: 14px; color: var(--grey-dark); }
+        .footer .hashtags {
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--grey-dark);
+            max-width: 800px;
+            margin-left: auto; margin-right: auto;
+            line-height: 2;
+        }
+        .footer .hashtags span { color: var(--cyan); }
+
+        /* ─── Animations ─── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        @keyframes scrollBounce {
+            0%, 100% { transform: rotate(45deg) translateY(0); }
+            50% { transform: rotate(45deg) translateY(8px); }
+        }
+        .fade-in {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── Counter animation ─── */
+        .counter { display: inline-block; }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 900px) {
+            .grid-2, .grid-3, .grid-4, .startup-overview { grid-template-columns: 1fr; }
+            .hero-stats { flex-direction: column; align-items: center; }
+            .stat-row { flex-direction: column; }
+            .hero h1 { letter-spacing: -1px; }
+            .filter-tabs { gap: 6px; }
+            .filter-tab { font-size: 10px; padding: 6px 10px; }
+            .startup-card { max-width: 100%; }
+        }
+        @media (min-width: 901px) and (max-width: 1100px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+            .grid-4 { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ─── Progress bars ─── */
+        .progress-row {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 14px;
+        }
+        .progress-label {
+            min-width: 200px; font-size: 13px; font-weight: 500;
+            text-align: right; color: var(--grey);
+        }
+        .progress-bar-bg {
+            flex: 1; height: 28px; border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            overflow: hidden; position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%; border-radius: 8px;
+            display: flex; align-items: center;
+            padding-left: 12px;
+            font-size: 12px; font-weight: 700;
+            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 0;
+        }
+        .progress-val {
+            min-width: 45px; font-size: 14px; font-weight: 700; text-align: right;
+        }
+
+        /* ─── Separator ─── */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 0 auto;
+            max-width: 1280px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow-1"></div>
+<div class="bg-glow-2"></div>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+    <div class="hero-badge"><span class="dot"></span> Event Recap & Data Analysis</div>
+    <h1><span class="gradient">PropTech Connect</span><br>2026</h1>
+    <p class="subtitle">The definitive gathering of the global PropTech ecosystem — analyzed through data.</p>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="number counter" data-target="1484">0</div>
+            <div class="label">Attendees</div>
+        </div>
+        <div class="hero-stat">
+            <div class="number counter" data-target="310">0</div>
+            <div class="label">Speakers</div>
+        </div>
+        <div class="hero-stat">
+            <div class="number counter" data-target="98">0</div>
+            <div class="label">Sponsors</div>
+        </div>
+        <div class="hero-stat">
+            <div class="number counter" data-target="111">0</div>
+            <div class="label">Countries</div>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow"></div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ GLOBAL REACH ═══════════ -->
+<section class="section fade-in" id="global">
+    <div class="section-header">
+        <div class="section-tag">Global Reach</div>
+        <h2 class="section-title">111 Countries.<br>Every Continent.</h2>
+        <p class="section-desc">From Dubai to London, New York to Mumbai — PropTech Connect 2026 was a truly global summit.</p>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-block">
+            <div class="big-num" style="color:var(--cyan)">1,080+</div>
+            <div class="big-label">Middle East & UAE</div>
+        </div>
+        <div class="stat-block">
+            <div class="big-num" style="color:var(--gold)">660+</div>
+            <div class="big-label">Europe</div>
+        </div>
+        <div class="stat-block">
+            <div class="big-num" style="color:var(--green)">250+</div>
+            <div class="big-label">North America</div>
+        </div>
+        <div class="stat-block">
+            <div class="big-num" style="color:var(--purple)">163+</div>
+            <div class="big-label">Asia</div>
+        </div>
+        <div class="stat-block">
+            <div class="big-num" style="color:var(--red)">106+</div>
+            <div class="big-label">Africa</div>
+        </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:32px;">
+        <div class="card">
+            <div class="card-title"><span class="icon icon-cyan">&#127758;</span> Attendees by Region</div>
+            <div class="chart-container" style="height:400px;">
+                <canvas id="regionChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon icon-gold">&#127463;</span> Top 15 Countries</div>
+            <div class="chart-container" style="height:400px;">
+                <canvas id="countryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Map -->
+    <div class="card card-full" style="margin-top:24px;">
+        <div class="card-title"><span class="icon icon-cyan">&#128506;</span> Global Attendee Distribution</div>
+        <div class="map-container" id="mapContainer" style="position:relative; background:var(--navy-light);">
+            <div class="map-tooltip" id="mapTooltip"></div>
+            <canvas id="worldMapCanvas" style="width:100%; height:100%;"></canvas>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ SPEAKERS ═══════════ -->
+<section class="section fade-in" id="speakers">
+    <div class="section-header">
+        <div class="section-tag">Speaker Lineup</div>
+        <h2 class="section-title">310 World-Class Speakers<br>from 264 Companies</h2>
+        <p class="section-desc">43 CEOs, 11 Managing Directors, and 10 Managing Partners took the stage — a boardroom of the entire PropTech industry.</p>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon icon-gold">&#127908;</span> Speaker Roles</div>
+            <div class="chart-container" style="height:350px;">
+                <canvas id="speakerRolesChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon icon-purple">&#127970;</span> Top Speaker Companies</div>
+            <div class="chart-container" style="height:350px;">
+                <canvas id="speakerCompaniesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ DECISION MAKERS ═══════════ -->
+<section class="section fade-in" id="leaders">
+    <div class="section-header">
+        <div class="section-tag">Leadership Density</div>
+        <h2 class="section-title">300+ C-Suite &<br>Founder-Level Attendees</h2>
+        <p class="section-desc">This wasn't a spectator event. This was where strategy meets execution.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title"><span class="icon icon-gold">&#128084;</span> Attendee Titles</div>
+        <div id="leaderBars" style="padding: 8px 0;"></div>
+    </div>
+
+    <div class="grid-3" style="margin-top:24px;">
+        <div class="stat-block" style="border-color:rgba(0,212,255,0.15);">
+            <div class="big-num" style="color:var(--cyan)">95</div>
+            <div class="big-label">CEOs</div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(255,184,0,0.15);">
+            <div class="big-num" style="color:var(--gold)">78</div>
+            <div class="big-label">Founders & Co-Founders</div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(139,92,246,0.15);">
+            <div class="big-num" style="color:var(--purple)">63</div>
+            <div class="big-label">MDs & Managing Partners</div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ COMPANIES ═══════════ -->
+<section class="section fade-in" id="companies">
+    <div class="section-header">
+        <div class="section-tag">Company Profiles</div>
+        <h2 class="section-title">1,100+ Companies<br>Across the Value Chain</h2>
+        <p class="section-desc">From early-stage startups to enterprise giants — the full real estate ecosystem was represented.</p>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon icon-green">&#128200;</span> Company Size Distribution</div>
+            <div class="chart-container" style="height:360px;">
+                <canvas id="companySizeChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon icon-cyan">&#127942;</span> Largest Delegations</div>
+            <table class="data-table">
+                <thead>
+                    <tr><th>#</th><th>Company</th><th>Attendees</th><th>Type</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="rank">01</td><td class="company-name">MRI Software</td><td>14</td><td><span class="badge badge-cyan">Platform</span></td></tr>
+                    <tr><td class="rank">02</td><td class="company-name">Alaan</td><td>8</td><td><span class="badge badge-green">FinTech</span></td></tr>
+                    <tr><td class="rank">03</td><td class="company-name">Yardi</td><td>8</td><td><span class="badge badge-cyan">Platform</span></td></tr>
+                    <tr><td class="rank">04</td><td class="company-name">Binghatti</td><td>7</td><td><span class="badge badge-gold">Developer</span></td></tr>
+                    <tr><td class="rank">05</td><td class="company-name">Colliers</td><td>7</td><td><span class="badge badge-purple">Brokerage</span></td></tr>
+                    <tr><td class="rank">06</td><td class="company-name">Innovo Group</td><td>7</td><td><span class="badge badge-green">Innovation</span></td></tr>
+                    <tr><td class="rank">07</td><td class="company-name">KAIZEN AM</td><td>7</td><td><span class="badge badge-gold">Asset Mgmt</span></td></tr>
+                    <tr><td class="rank">08</td><td class="company-name">Coraly</td><td>6</td><td><span class="badge badge-cyan">PropTech</span></td></tr>
+                    <tr><td class="rank">09</td><td class="company-name">AWS</td><td>5</td><td><span class="badge badge-purple">Cloud</span></td></tr>
+                    <tr><td class="rank">10</td><td class="company-name">Schneider Electric</td><td>5</td><td><span class="badge badge-green">Smart Bldg</span></td></tr>
+                    <tr><td class="rank">11</td><td class="company-name">Savills ME</td><td>5</td><td><span class="badge badge-purple">Brokerage</span></td></tr>
+                    <tr><td class="rank">12</td><td class="company-name">Ellington</td><td>5</td><td><span class="badge badge-gold">Developer</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ STARTUPS ═══════════ -->
+<section class="section fade-in" id="startups">
+    <div class="section-header">
+        <div class="section-tag">Startup & Innovation Ecosystem</div>
+        <h2 class="section-title">184 Founders.<br>341 Seeking Investment.<br>Infinite Potential.</h2>
+        <p class="section-desc">PropTech Connect was a founder-heavy, deal-making event — nearly half the room was oriented around startup investment and innovation. Here's every company that participated, organized by what they do.</p>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-block" style="border-color:rgba(0,255,136,0.15);">
+            <div class="big-num" style="color:var(--green)">184</div>
+            <div class="big-label">Founders & Co-Founders</div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(0,212,255,0.15);">
+            <div class="big-num" style="color:var(--cyan)">341</div>
+            <div class="big-label">Seeking Startup Investment</div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(255,184,0,0.15);">
+            <div class="big-num" style="color:var(--gold)">377</div>
+            <div class="big-label">PE & Family Office</div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(139,92,246,0.15);">
+            <div class="big-num" style="color:var(--purple)">718</div>
+            <div class="big-label">Combined Investment Focus</div>
+        </div>
+    </div>
+
+    <!-- Startup overview charts -->
+    <div class="startup-overview" style="margin-top:32px;">
+        <div class="card">
+            <div class="card-title"><span class="icon icon-green">&#128202;</span> Startups by Category</div>
+            <div class="chart-container" style="height:380px;">
+                <canvas id="startupCatChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon icon-purple">&#127919;</span> Innovation Focus Areas</div>
+            <div class="chart-container" style="height:380px;">
+                <canvas id="startupFocusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="card" style="margin-top:24px;">
+        <div class="card-title"><span class="icon icon-green">&#128640;</span> Complete Startup & Innovator Directory — 95 Companies</div>
+        <p style="font-size:13px; color:var(--grey-dark); margin-bottom:24px;">Click a category to filter. Every participating PropTech company with their description.</p>
+
+        <div class="filter-tabs">
+            <div class="filter-tab active" data-filter="all">All (95)</div>
+            <div class="filter-tab" data-filter="ai">AI & Intelligence (11)</div>
+            <div class="filter-tab" data-filter="pm">Property Management (11)</div>
+            <div class="filter-tab" data-filter="fintech">Investment & FinTech (14)</div>
+            <div class="filter-tab" data-filter="viz">3D & Visualization (7)</div>
+            <div class="filter-tab" data-filter="green">Sustainability & Smart (8)</div>
+            <div class="filter-tab" data-filter="security">Access & Security (5)</div>
+            <div class="filter-tab" data-filter="data">Data & Analytics (8)</div>
+            <div class="filter-tab" data-filter="construction">Construction Tech (5)</div>
+            <div class="filter-tab" data-filter="broker">Brokerage & Agency (6)</div>
+            <div class="filter-tab" data-filter="ops">Operations & Logistics (6)</div>
+            <div class="filter-tab" data-filter="cloud">Cloud & Infrastructure (5)</div>
+            <div class="filter-tab" data-filter="other">Development & Other (9)</div>
+        </div>
+
+        <!-- ── AI & Intelligence ── -->
+        <div class="startup-category" data-cat="ai">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-ai">AI & Intelligence</span>
+                <span class="cat-count">11 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">Hayy AI</span><span class="s-desc">AI-Native Marketplace for Real Estate</span></div>
+                <div class="startup-card"><span class="s-name">Property GPT</span><span class="s-desc">Generative AI for real estate workflows</span></div>
+                <div class="startup-card"><span class="s-name">Prop8t.ai</span><span class="s-desc">AI-powered property solutions</span></div>
+                <div class="startup-card"><span class="s-name">Purlin Co.</span><span class="s-desc">AI operating system powering real estate from search to close</span></div>
+                <div class="startup-card"><span class="s-name">Lette</span><span class="s-desc">AI Operating System that unlocks your portfolio value</span></div>
+                <div class="startup-card"><span class="s-name">Buildable</span><span class="s-desc">AI-powered Market Intelligence, Feasibility & Valuations</span></div>
+                <div class="startup-card"><span class="s-name">Asano</span><span class="s-desc">Real-time financial intelligence powering real estate development</span></div>
+                <div class="startup-card"><span class="s-name">Ignyte</span><span class="s-desc">AI-driven real estate intelligence platform</span></div>
+                <div class="startup-card"><span class="s-name">Tribe</span><span class="s-desc">AI-powered community & property management</span></div>
+                <div class="startup-card"><span class="s-name">Asette.ai</span><span class="s-desc">AI-driven asset management solutions</span></div>
+                <div class="startup-card"><span class="s-name">Facade AI</span><span class="s-desc">AI-powered facade & building analysis</span></div>
+            </div>
+        </div>
+
+        <!-- ── Property Management ── -->
+        <div class="startup-category" data-cat="pm">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-pm">Property Management</span>
+                <span class="cat-count">11 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">MRI Software</span><span class="s-desc">Real estate software for investment, asset & property management</span></div>
+                <div class="startup-card"><span class="s-name">Yardi</span><span class="s-desc">Investment, asset and property management solutions for real estate</span></div>
+                <div class="startup-card"><span class="s-name">OSOS</span><span class="s-desc">Transform leasing, maintenance, finance & operations into one platform</span></div>
+                <div class="startup-card"><span class="s-name">Property Inspect</span><span class="s-desc">Property Inspection & Operations Software</span></div>
+                <div class="startup-card"><span class="s-name">Dynamic Netsoft</span><span class="s-desc">Redefining Property Management technology</span></div>
+                <div class="startup-card"><span class="s-name">TouchRight Software</span><span class="s-desc">Property Inspection Software</span></div>
+                <div class="startup-card"><span class="s-name">Matrix Rental Solutions</span><span class="s-desc">End-to-end rental management platform</span></div>
+                <div class="startup-card"><span class="s-name">Takeem</span><span class="s-desc">Mitigate Risk, Maximise Rent</span></div>
+                <div class="startup-card"><span class="s-name">SquarePlan</span><span class="s-desc">Space planning & property management</span></div>
+                <div class="startup-card"><span class="s-name">Rewa</span><span class="s-desc">Rent Rewarded — tenant loyalty platform</span></div>
+                <div class="startup-card"><span class="s-name">UnderTheDoormat Group</span><span class="s-desc">Helping every property fulfil its potential everyday</span></div>
+            </div>
+        </div>
+
+        <!-- ── Investment & FinTech ── -->
+        <div class="startup-category" data-cat="fintech">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-fin">Investment & FinTech</span>
+                <span class="cat-count">14 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">Alaan</span><span class="s-desc">The SuperCard for businesses — most loved fintech in the Middle East</span></div>
+                <div class="startup-card"><span class="s-name">Adyen</span><span class="s-desc">Financial technology platform of choice for leading companies</span></div>
+                <div class="startup-card"><span class="s-name">Airwallex</span><span class="s-desc">Global payments and financial platform for growing businesses</span></div>
+                <div class="startup-card"><span class="s-name">Tokinvest</span><span class="s-desc">Tokenized real estate investment</span></div>
+                <div class="startup-card"><span class="s-name">Digishares</span><span class="s-desc">Leading provider of real world asset tokenization solutions</span></div>
+                <div class="startup-card"><span class="s-name">BRXS</span><span class="s-desc">Private Real Estate Investment Network</span></div>
+                <div class="startup-card"><span class="s-name">OWNIE</span><span class="s-desc">Tokenized rent-to-own contracts for the secondary market in the UAE</span></div>
+                <div class="startup-card"><span class="s-name">Traent</span><span class="s-desc">Trusted Real-world Assets, enabling Next-gen Tokenization</span></div>
+                <div class="startup-card"><span class="s-name">Baitak</span><span class="s-desc">Purchase homes through group buying and save up to 15%</span></div>
+                <div class="startup-card"><span class="s-name">Revest</span><span class="s-desc">Real estate investment platform</span></div>
+                <div class="startup-card"><span class="s-name">Benrock Capital</span><span class="s-desc">PropTech venture capital fund</span></div>
+                <div class="startup-card"><span class="s-name">Dubai Future District Fund</span><span class="s-desc">Investment fund supporting future technology companies</span></div>
+                <div class="startup-card"><span class="s-name">Scan Global Holdings</span><span class="s-desc">Finance, Business & Real Estate investment</span></div>
+                <div class="startup-card"><span class="s-name">Watad</span><span class="s-desc">Real estate investment solutions</span></div>
+            </div>
+        </div>
+
+        <!-- ── 3D & Visualization ── -->
+        <div class="startup-category" data-cat="viz">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-viz">3D & Visualization</span>
+                <span class="cat-count">7 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">PropVR</span><span class="s-desc">Real Estate Digital Twins, Metaverse & 3D Visualizations</span></div>
+                <div class="startup-card"><span class="s-name">3D Estate</span><span class="s-desc">Interactive 3D applications for residential real estate</span></div>
+                <div class="startup-card"><span class="s-name">Bright Spaces</span><span class="s-desc">The First 3D Space Planning Solution Made for Office Leasing</span></div>
+                <div class="startup-card"><span class="s-name">WOOW Studio</span><span class="s-desc">3D platform for off-plan marketing & sales. Access from any device, 24/7</span></div>
+                <div class="startup-card"><span class="s-name">HoloX</span><span class="s-desc">Holographic real estate displays</span></div>
+                <div class="startup-card"><span class="s-name">Vizualife</span><span class="s-desc">Immersive property visualization solutions</span></div>
+                <div class="startup-card"><span class="s-name">Flux Real</span><span class="s-desc">Interactive Spaces. Intelligent Results.</span></div>
+            </div>
+        </div>
+
+        <!-- ── Sustainability & Smart Buildings ── -->
+        <div class="startup-category" data-cat="green">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-green">Sustainability & Smart Buildings</span>
+                <span class="cat-count">8 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">Smart Spaces</span><span class="s-desc">Optimising environments for people and the planet</span></div>
+                <div class="startup-card"><span class="s-name">Schneider Electric</span><span class="s-desc">Global leader in energy management & building automation</span></div>
+                <div class="startup-card"><span class="s-name">Delta Controls</span><span class="s-desc">Leading in Integrated BACnet, IoT & AI-enabled building automation</span></div>
+                <div class="startup-card"><span class="s-name">zencontrol</span><span class="s-desc">Intelligent control for lighting, shading and spaces</span></div>
+                <div class="startup-card"><span class="s-name">WasteTracker</span><span class="s-desc">Measure, Manage, Minimize waste in Commercial Real Estate</span></div>
+                <div class="startup-card"><span class="s-name">Watergate</span><span class="s-desc">Connect the drops — smart water leak prevention</span></div>
+                <div class="startup-card"><span class="s-name">Rensair</span><span class="s-desc">Cut HVAC costs by >40%, with no building works. Guaranteed ROI</span></div>
+                <div class="startup-card"><span class="s-name">Dephina</span><span class="s-desc">Outdoor & Beach Cooling solutions</span></div>
+            </div>
+        </div>
+
+        <!-- ── Smart Access & Security ── -->
+        <div class="startup-category" data-cat="security">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-security">Smart Access & Security</span>
+                <span class="cat-count">5 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">Axis Communications</span><span class="s-desc">Solutions in video surveillance, access control & audio</span></div>
+                <div class="startup-card"><span class="s-name">HID</span><span class="s-desc">Powering Trusted Identities</span></div>
+                <div class="startup-card"><span class="s-name">BAS-IP</span><span class="s-desc">Smart intercom & building access solutions</span></div>
+                <div class="startup-card"><span class="s-name">Metra Smart Locker</span><span class="s-desc">Future-ready biometric and mobile locker access for buildings</span></div>
+                <div class="startup-card"><span class="s-name">QuickPass by mr.alfred</span><span class="s-desc">The only DET-approved seamless check-in solution</span></div>
+            </div>
+        </div>
+
+        <!-- ── Data & Analytics ── -->
+        <div class="startup-category" data-cat="data">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-data">Data & Analytics</span>
+                <span class="cat-count">8 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">SearchSmartly</span><span class="s-desc">Property Search and Listing Enrichment APIs powering real estate discovery</span></div>
+                <div class="startup-card"><span class="s-name">MapsPeople</span><span class="s-desc">Leading indoor mapping platform powered by AI and spatial data</span></div>
+                <div class="startup-card"><span class="s-name">Daleel.io</span><span class="s-desc">We illuminate real estate with data, so every investment feels confident</span></div>
+                <div class="startup-card"><span class="s-name">YallaValue</span><span class="s-desc">How much is a property REALLY worth?</span></div>
+                <div class="startup-card"><span class="s-name">Yield</span><span class="s-desc">Why some buildings outperform others — data driven asset strategy</span></div>
+                <div class="startup-card"><span class="s-name">Pi Labs</span><span class="s-desc">Europe's leading PropTech VC — data-driven investment</span></div>
+                <div class="startup-card"><span class="s-name">Redpin</span><span class="s-desc">Real estate data analytics platform</span></div>
+                <div class="startup-card"><span class="s-name">WellStat</span><span class="s-desc">Building wellness & performance data analytics</span></div>
+            </div>
+        </div>
+
+        <!-- ── Construction Tech ── -->
+        <div class="startup-category" data-cat="construction">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-construction">Construction Tech</span>
+                <span class="cat-count">5 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">PlanRadar</span><span class="s-desc">Platform for construction, facility management & real estate projects</span></div>
+                <div class="startup-card"><span class="s-name">SIGNAX</span><span class="s-desc">AI platform turning BIM & site data into real-time construction decisions</span></div>
+                <div class="startup-card"><span class="s-name">Onsite</span><span class="s-desc">Smart ConTech solutions</span></div>
+                <div class="startup-card"><span class="s-name">Home Made</span><span class="s-desc">Construction & home improvement technology</span></div>
+                <div class="startup-card"><span class="s-name">Dar — a Sidara Company</span><span class="s-desc">World-leading consultancy shaping the built environment globally</span></div>
+            </div>
+        </div>
+
+        <!-- ── Brokerage & Agency ── -->
+        <div class="startup-category" data-cat="broker">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-broker">Brokerage & Agency Tech</span>
+                <span class="cat-count">6 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">Coraly</span><span class="s-desc">The Real Estate Brokerage OS of the Future</span></div>
+                <div class="startup-card"><span class="s-name">Propkee</span><span class="s-desc">Video-first real estate marketplace for global investors</span></div>
+                <div class="startup-card"><span class="s-name">Holo</span><span class="s-desc">Buying property made easy</span></div>
+                <div class="startup-card"><span class="s-name">Plyo | UnitFinder.com</span><span class="s-desc">Interactive sales platform for off-plan real estate</span></div>
+                <div class="startup-card"><span class="s-name">Mifta</span><span class="s-desc">Full-stack rental brokerage platform</span></div>
+                <div class="startup-card"><span class="s-name">REACH Middle East</span><span class="s-desc">NAR-backed PropTech growth program</span></div>
+            </div>
+        </div>
+
+        <!-- ── Operations & Logistics ── -->
+        <div class="startup-category" data-cat="ops">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-ops">Operations & Logistics</span>
+                <span class="cat-count">6 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">Emirates Real Estate Solutions</span><span class="s-desc">Transforming real estate through innovation</span></div>
+                <div class="startup-card"><span class="s-name">Ehagz — JatDev</span><span class="s-desc">Enterprise-grade PropTech ecosystem enabling digital property transactions</span></div>
+                <div class="startup-card"><span class="s-name">Robochute Systems</span><span class="s-desc">Automated waste chute systems for buildings</span></div>
+                <div class="startup-card"><span class="s-name">Packsmith</span><span class="s-desc">Smart package management for buildings</span></div>
+                <div class="startup-card"><span class="s-name">Houmanoids Inc</span><span class="s-desc">Robotics & automation for real estate operations</span></div>
+                <div class="startup-card"><span class="s-name">Keyper</span><span class="s-desc">Digital rent solutions for tenants and property owners</span></div>
+            </div>
+        </div>
+
+        <!-- ── Cloud & Infrastructure ── -->
+        <div class="startup-category" data-cat="cloud">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-cloud">Cloud & Infrastructure</span>
+                <span class="cat-count">5 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">AWS</span><span class="s-desc">Amazon Web Services — cloud infrastructure for PropTech</span></div>
+                <div class="startup-card"><span class="s-name">RUCKUS Networks</span><span class="s-desc">Enterprise networking & connectivity solutions</span></div>
+                <div class="startup-card"><span class="s-name">Intwo</span><span class="s-desc">Cloud platforms and business AI to modernize data & operations</span></div>
+                <div class="startup-card"><span class="s-name">Dubai PropTech Hub</span><span class="s-desc">The region's first PropTech Innovation Hub</span></div>
+                <div class="startup-card"><span class="s-name">Dtec</span><span class="s-desc">Dubai Technology Entrepreneur Campus</span></div>
+            </div>
+        </div>
+
+        <!-- ── Marketing, Development & Other ── -->
+        <div class="startup-category" data-cat="other">
+            <div class="cat-header">
+                <span class="tag-cat tag-cat-marketing">Marketing, Sales, Development & Other</span>
+                <span class="cat-count">9 companies</span>
+            </div>
+            <div class="startup-grid">
+                <div class="startup-card"><span class="s-name">Fixit AI</span><span class="s-desc">AI agents that qualify leads, automate follow-ups & shorten sales cycles</span></div>
+                <div class="startup-card"><span class="s-name">PropTexx</span><span class="s-desc">Turning images into a retail-funded revenue channel</span></div>
+                <div class="startup-card"><span class="s-name">FairFleet</span><span class="s-desc">The leading drone solution in real estate</span></div>
+                <div class="startup-card"><span class="s-name">Limitless Parking</span><span class="s-desc">Smart Parking System</span></div>
+                <div class="startup-card"><span class="s-name">1VALET</span><span class="s-desc">Smart access & parking technology for buildings</span></div>
+                <div class="startup-card"><span class="s-name">Villa Tracker</span><span class="s-desc">Luxury Villa Distribution Platform for Travel Professionals Worldwide</span></div>
+                <div class="startup-card"><span class="s-name">Zonifero</span><span class="s-desc">Your Frictionless Spaces — workspace management</span></div>
+                <div class="startup-card"><span class="s-name">Ellington Properties</span><span class="s-desc">Crafting beautiful residential environments</span></div>
+                <div class="startup-card"><span class="s-name">Imtiaz Developments</span><span class="s-desc">Real estate development in the UAE</span></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ INTERESTS ═══════════ -->
+<section class="section fade-in" id="interests">
+    <div class="section-header">
+        <div class="section-tag">Industry Focus</div>
+        <h2 class="section-title">13,219 Interest Selections.<br>Here's What Matters.</h2>
+        <p class="section-desc">Every attendee selected their areas of focus — revealing the true priorities of the global PropTech industry.</p>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon icon-cyan">&#128293;</span> Top 10 Interests</div>
+            <div class="chart-container" style="height:420px;">
+                <canvas id="interestsChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon icon-gold">&#128202;</span> Interest Categories</div>
+            <div class="chart-container" style="height:420px;">
+                <canvas id="interestCatChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-4" style="margin-top:24px;">
+        <div class="stat-block" style="border-color:rgba(0,212,255,0.15);">
+            <div class="big-num" style="color:var(--cyan); font-size:28px;">599</div>
+            <div class="big-label">Expanding to UAE<br><small style="color:var(--cyan)">#1 Interest</small></div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(255,184,0,0.15);">
+            <div class="big-num" style="color:var(--gold); font-size:28px;">4,231</div>
+            <div class="big-label">Residential PropTech<br><small style="color:var(--gold)">Dominant Sector</small></div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(0,255,136,0.15);">
+            <div class="big-num" style="color:var(--green); font-size:28px;">479</div>
+            <div class="big-label">ESG & Sustainability<br><small style="color:var(--green)">Rising Fast</small></div>
+        </div>
+        <div class="stat-block" style="border-color:rgba(139,92,246,0.15);">
+            <div class="big-num" style="color:var(--purple); font-size:28px;">718</div>
+            <div class="big-label">Investment Focused<br><small style="color:var(--purple)">PE + Startup</small></div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ SPONSORS ═══════════ -->
+<section class="section fade-in" id="sponsors">
+    <div class="section-header">
+        <div class="section-tag">Sponsors</div>
+        <h2 class="section-title">98 Sponsors Powering<br>the PropTech Ecosystem</h2>
+    </div>
+    <div class="card">
+        <div class="card-title"><span class="icon icon-gold">&#11088;</span> Sponsor Ecosystem by Category</div>
+        <div class="chart-container" style="height:360px;">
+            <canvas id="sponsorChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ SPONSOR DIRECTORY ═══════════ -->
+<section class="section fade-in" id="sponsor-directory">
+    <div class="section-header">
+        <div class="section-tag">Sponsor Directory</div>
+        <h2 class="section-title">50 Corporate Sponsors<br>Powering the Ecosystem</h2>
+        <p class="section-sub" style="max-width:680px; margin:16px auto 0; font-size:15px; color:var(--grey);">From global enterprises to PropTech platforms — organized by sponsorship tier. Startup sponsors are covered in the Startups section above.</p>
+    </div>
+
+    <!-- Platinum -->
+    <div class="sponsor-tier">
+        <div class="tier-badge tier-platinum">&#9830; Platinum — 2 Sponsors</div>
+        <div class="sponsor-grid">
+            <div class="sponsor-card"><div class="sp-name">Smart Spaces</div><div class="sp-desc">Optimising environments for people and the planet</div><div class="sp-count">7 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Imtiaz Developments</div><div class="sp-desc">Real estate development in the UAE</div><div class="sp-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Gold -->
+    <div class="sponsor-tier">
+        <div class="tier-badge tier-gold">&#9733; Gold — 6 Sponsors</div>
+        <div class="sponsor-grid">
+            <div class="sponsor-card"><div class="sp-name">MRI Software</div><div class="sp-desc">Real estate software for investment, asset & property management</div><div class="sp-count">15 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Yardi</div><div class="sp-desc">Investment, asset and property management solutions for real estate</div><div class="sp-count">9 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Limitless Parking</div><div class="sp-desc">Smart Parking System</div><div class="sp-count">6 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Traent</div><div class="sp-desc">Trusted Real-world Assets, enabling Next-gen Tokenization</div><div class="sp-count">6 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Ellington Properties</div><div class="sp-desc">Crafting beautiful residential environments</div><div class="sp-count">5 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">REACH Middle East</div><div class="sp-desc">NAR-backed PropTech growth program</div><div class="sp-count">—</div></div>
+        </div>
+    </div>
+
+    <!-- Silver -->
+    <div class="sponsor-tier">
+        <div class="tier-badge tier-silver">&#9670; Silver — 12 Sponsors</div>
+        <div class="sponsor-grid">
+            <div class="sponsor-card"><div class="sp-name">Alaan</div><div class="sp-desc">The SuperCard for businesses — most loved fintech in the ME</div><div class="sp-count">8 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Dar — a Sidara Company</div><div class="sp-desc">World-leading consultancy shaping the built environment globally</div><div class="sp-count">6 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Intwo</div><div class="sp-desc">Cloud platforms and business AI to modernize data & operations</div><div class="sp-count">6 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">AWS</div><div class="sp-desc">Amazon Web Services — cloud infrastructure for PropTech</div><div class="sp-count">5 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Bright Spaces</div><div class="sp-desc">The First 3D Space Planning Solution Made for Office Leasing</div><div class="sp-count">5 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">RUCKUS Networks</div><div class="sp-desc">Enterprise networking & connectivity solutions</div><div class="sp-count">5 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Schneider Electric</div><div class="sp-desc">Global leader in energy management & building automation</div><div class="sp-count">5 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Adyen</div><div class="sp-desc">Financial technology platform of choice for leading companies</div><div class="sp-count">4 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Emirates Real Estate Solutions</div><div class="sp-desc">Transforming real estate through innovation</div><div class="sp-count">4 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Property Inspect</div><div class="sp-desc">Property Inspection & Operations Software</div><div class="sp-count">4 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Dubai Future District Fund</div><div class="sp-desc">Investment fund supporting future technology companies</div><div class="sp-count">3 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Dubai PropTech Hub</div><div class="sp-desc">The region's first PropTech Innovation Hub</div><div class="sp-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Bronze -->
+    <div class="sponsor-tier">
+        <div class="tier-badge tier-bronze">&#9679; Bronze — 30 Sponsors</div>
+        <div class="sponsor-grid">
+            <div class="sponsor-card"><div class="sp-name">Propkee</div><div class="sp-desc">Video-first real estate marketplace for global investors</div><div class="sp-count">10 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Dephina</div><div class="sp-desc">Outdoor & Beach Cooling solutions</div><div class="sp-count">6 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Dynamic Netsoft</div><div class="sp-desc">Redefining Property Management technology</div><div class="sp-count">6 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">3D Estate</div><div class="sp-desc">Interactive 3D applications for residential real estate</div><div class="sp-count">5 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Watergate</div><div class="sp-desc">Smart water leak prevention — Connect the drops</div><div class="sp-count">5 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">HID</div><div class="sp-desc">Powering Trusted Identities</div><div class="sp-count">4 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">OSOS</div><div class="sp-desc">Transform leasing, maintenance, finance & operations into one platform</div><div class="sp-count">4 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">PropVR</div><div class="sp-desc">Real Estate Digital Twins, Metaverse & 3D Visualizations</div><div class="sp-count">4 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">WellStat</div><div class="sp-desc">Building wellness & performance data analytics</div><div class="sp-count">4 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Axis Communications</div><div class="sp-desc">Solutions in video surveillance, access control & audio</div><div class="sp-count">3 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">FairFleet</div><div class="sp-desc">The leading drone solution in real estate</div><div class="sp-count">3 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">MapsPeople</div><div class="sp-desc">Leading indoor mapping platform powered by AI and spatial data</div><div class="sp-count">3 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">PlanRadar</div><div class="sp-desc">Platform for construction, facility management & real estate projects</div><div class="sp-count">3 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Scan Global Holdings</div><div class="sp-desc">Finance, Business & Real Estate investment</div><div class="sp-count">3 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">TouchRight Software</div><div class="sp-desc">Property Inspection Software</div><div class="sp-count">3 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">1VALET</div><div class="sp-desc">Smart access & parking technology for buildings</div><div class="sp-count">2 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Airwallex</div><div class="sp-desc">Global payments and financial platform for growing businesses</div><div class="sp-count">2 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">BAS-IP</div><div class="sp-desc">Smart intercom & building access solutions</div><div class="sp-count">2 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Holo</div><div class="sp-desc">Buying property made easy</div><div class="sp-count">2 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">zencontrol</div><div class="sp-desc">Intelligent control for lighting, shading and spaces</div><div class="sp-count">2 attendees</div></div>
+            <div class="sponsor-card"><div class="sp-name">Delta Controls</div><div class="sp-desc">Integrated BACnet, IoT & AI-enabled building automation</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">Dtec</div><div class="sp-desc">Dubai Technology Entrepreneur Campus</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">Facade AI</div><div class="sp-desc">AI-powered facade & building analysis</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">Ignyte</div><div class="sp-desc">AI-driven real estate intelligence platform</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">Metra Smart Locker</div><div class="sp-desc">Future-ready biometric and mobile locker access for buildings</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">Pi Labs</div><div class="sp-desc">Europe's leading PropTech VC — data-driven investment</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">Redpin</div><div class="sp-desc">Real estate data analytics platform</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">WasteTracker</div><div class="sp-desc">Measure, Manage, Minimize waste in Commercial Real Estate</div><div class="sp-count">1 attendee</div></div>
+            <div class="sponsor-card"><div class="sp-name">Ehagz — JatDev</div><div class="sp-desc">Enterprise-grade PropTech ecosystem enabling digital property transactions</div><div class="sp-count">—</div></div>
+            <div class="sponsor-card"><div class="sp-name">Plyo / UnitFinder.com</div><div class="sp-desc">Interactive sales platform for off-plan real estate</div><div class="sp-count">—</div></div>
+        </div>
+    </div>
+
+    <!-- Startup sponsors are listed in the Startup & Innovation section above -->
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ NOTABLE COMPANIES ═══════════ -->
+<section class="section fade-in" id="notable-companies">
+    <div class="section-header">
+        <div class="section-tag">Notable Companies</div>
+        <h2 class="section-title">Industry Leaders<br>Who Showed Up</h2>
+        <p class="section-sub" style="max-width:680px; margin:16px auto 0; font-size:15px; color:var(--grey);">Beyond sponsors and startups — the brokerages, developers, consultancies, and enterprises that made up the audience.</p>
+    </div>
+
+    <!-- Real Estate Brokerages & Advisory -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-broker">Real Estate Brokerages & Advisory</span>
+            <span class="cat-count">14 companies</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">Colliers</div><div class="c-info">Global real estate services & investment management</div><div class="c-count">7 attendees</div></div>
+            <div class="company-card"><div class="c-name">Savills Middle East</div><div class="c-info">Global property advisory & consulting</div><div class="c-count">5 attendees</div></div>
+            <div class="company-card"><div class="c-name">Homes 4 Life Real Estate</div><div class="c-info">Dubai-based brokerage</div><div class="c-count">5 attendees</div></div>
+            <div class="company-card"><div class="c-name">Engel & V&ouml;lkers</div><div class="c-info">Premium international real estate brokerage</div><div class="c-count">5 attendees</div></div>
+            <div class="company-card"><div class="c-name">Betterhomes</div><div class="c-info">Leading UAE real estate brokerage</div><div class="c-count">5 attendees</div></div>
+            <div class="company-card"><div class="c-name">Property Finder</div><div class="c-info">MENA's leading property portal</div><div class="c-count">4 attendees</div></div>
+            <div class="company-card"><div class="c-name">CBRE</div><div class="c-info">World's largest commercial real estate services firm</div><div class="c-count">4 attendees</div></div>
+            <div class="company-card"><div class="c-name">Knight Frank</div><div class="c-info">Global real estate consultancy</div><div class="c-count">4 attendees</div></div>
+            <div class="company-card"><div class="c-name">OSUS Properties</div><div class="c-info">Dubai-based real estate agency</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Newmark</div><div class="c-info">Global commercial real estate advisory</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Asteco</div><div class="c-info">UAE property management & advisory</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Cushman & Wakefield</div><div class="c-info">Global real estate services firm</div><div class="c-count">2+ attendees</div></div>
+            <div class="company-card"><div class="c-name">JLL</div><div class="c-info">Global real estate & investment management</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Allsopp & Allsopp</div><div class="c-info">UAE property sales & management</div><div class="c-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Real Estate Developers -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-dev">Real Estate Developers</span>
+            <span class="cat-count">13 companies</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">Binghatti</div><div class="c-info">Leading UAE developer — technology & AI-forward</div><div class="c-count">7 attendees</div></div>
+            <div class="company-card"><div class="c-name">Deyaar Development</div><div class="c-info">Major Dubai-based property developer (PJSC)</div><div class="c-count">5 attendees</div></div>
+            <div class="company-card"><div class="c-name">Danube Properties</div><div class="c-info">Major UAE developer — affordable luxury segment</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Misr Italia Properties</div><div class="c-info">Egyptian real estate developer</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Capstone Property</div><div class="c-info">Real estate development & services</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Union Properties</div><div class="c-info">Major Dubai developer (DFM listed)</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">OMNIYAT</div><div class="c-info">Ultra-luxury Dubai developer</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Azizi Developments</div><div class="c-info">Top UAE private developer</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Grovy Developers</div><div class="c-info">Boutique real estate developer</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">LEAD Real Estate Developer</div><div class="c-info">UAE real estate development</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Arcom Developments</div><div class="c-info">Real estate development & engineering</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Hassan Allam Properties</div><div class="c-info">Egypt's leading diversified developer</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Empire Developments</div><div class="c-info">Real estate development</div><div class="c-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Government & Regulatory -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-cloud">Government & Regulatory Bodies</span>
+            <span class="cat-count">7 entities</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">DIFC Innovation Hub</div><div class="c-info">Dubai International Financial Centre — PropTech Hub</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Expo City Dubai</div><div class="c-info">Smart city development & management</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">NEOM</div><div class="c-info">Saudi Arabia's $500B mega-project</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">DLD</div><div class="c-info">Dubai Land Department</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">ADREC</div><div class="c-info">Abu Dhabi Real Estate Centre</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Dubai Silicon Oasis</div><div class="c-info">Technology-focused free zone</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Red Sea Utilities</div><div class="c-info">Red Sea Global — utility infrastructure</div><div class="c-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Asset Management & Consulting -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-fin">Asset Management & Consulting</span>
+            <span class="cat-count">11 companies</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">KAIZEN Asset Management</div><div class="c-info">Community & portfolio management services</div><div class="c-count">7 attendees</div></div>
+            <div class="company-card"><div class="c-name">Dar</div><div class="c-info">World-leading engineering & architecture consultancy</div><div class="c-count">5 attendees</div></div>
+            <div class="company-card"><div class="c-name">Verdantix</div><div class="c-info">PropTech & smart buildings research & advisory</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Siemens</div><div class="c-info">Global technology — smart buildings & digital infrastructure</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Kroll MENA</div><div class="c-info">Real estate advisory & valuation</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Drees & Sommer</div><div class="c-info">Global consulting & engineering firm</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Gensler</div><div class="c-info">World's largest architecture & design firm</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">KEO International</div><div class="c-info">Digital advisory & consulting services</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Cavendish Maxwell</div><div class="c-info">UAE property valuation & advisory</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Khidmah</div><div class="c-info">Aldar's facility management arm</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Resolute Asset Management</div><div class="c-info">Real estate asset management & innovation</div><div class="c-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Investment & Finance -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-data">Investment & Finance</span>
+            <span class="cat-count">8 companies</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">Cornelian Capital Partners</div><div class="c-info">Real estate private equity</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Awqaf Capital</div><div class="c-info">Real estate investment & endowments</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Momento Capital</div><div class="c-info">Real estate investment fund</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Aroundtown</div><div class="c-info">Europe's largest listed real estate company</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Pithos</div><div class="c-info">Real estate investment firm</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">National Real Estate Co.</div><div class="c-info">Regional real estate investment group</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Global Branded Residences</div><div class="c-info">Branded hospitality real estate</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">PropTech Farm</div><div class="c-info">PropTech-focused venture fund</div><div class="c-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Hospitality & Short-Term Rental -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-marketing">Hospitality & Short-Term Rentals</span>
+            <span class="cat-count">5 companies</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">Silkhaus</div><div class="c-info">Short-term rental management platform</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">GuestReady</div><div class="c-info">Short-term rental management services</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">The Lux Collective</div><div class="c-info">Luxury hospitality group</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">HOFTEL</div><div class="c-info">Hotel & serviced apartment concept</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Kerzner International</div><div class="c-info">Global luxury hospitality — Atlantis, One&Only</div><div class="c-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Technology & PropTech -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-ai">Technology & PropTech Ventures</span>
+            <span class="cat-count">11 companies</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">Accolade</div><div class="c-info">PropTech product studio</div><div class="c-count">5 attendees</div></div>
+            <div class="company-card"><div class="c-name">Spirikal</div><div class="c-info">PropTech solutions provider</div><div class="c-count">4 attendees</div></div>
+            <div class="company-card"><div class="c-name">Luxfolio Real Estate</div><div class="c-info">Tech-driven real estate operations</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">DeepImmo GmbH</div><div class="c-info">AI-powered real estate analytics (Germany)</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">Mobius Carbon</div><div class="c-info">Carbon analytics for the built environment</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">BSO</div><div class="c-info">Global connectivity & network infrastructure</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">SoftBank Robotics</div><div class="c-info">Robotics & automation for buildings</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">ai71</div><div class="c-info">Abu Dhabi-based AI company (G42 subsidiary)</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">CASAFARI</div><div class="c-info">European real estate data aggregation platform</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">Brightcall.ai</div><div class="c-info">AI-powered sales communication platform</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">XY Sense</div><div class="c-info">Workplace occupancy & space intelligence</div><div class="c-count">2 attendees</div></div>
+        </div>
+    </div>
+
+    <!-- Media & Events -->
+    <div class="company-category">
+        <div class="cat-header">
+            <span class="tag-cat tag-cat-ops">Media, Events & Industry</span>
+            <span class="cat-count">5 companies</span>
+        </div>
+        <div class="company-grid">
+            <div class="company-card"><div class="c-name">Innovo Group</div><div class="c-info">PropTech Connect event organizers</div><div class="c-count">7 attendees</div></div>
+            <div class="company-card"><div class="c-name">Galetti Auction</div><div class="c-info">Property auction specialists (South Africa)</div><div class="c-count">3 attendees</div></div>
+            <div class="company-card"><div class="c-name">The Finance 360</div><div class="c-info">Financial media & content</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">IWBI</div><div class="c-info">International WELL Building Institute</div><div class="c-count">2 attendees</div></div>
+            <div class="company-card"><div class="c-name">REACH UK / REACH Israel</div><div class="c-info">NAR-backed PropTech growth programs</div><div class="c-count">4 attendees</div></div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════ KEY TAKEAWAYS ═══════════ -->
+<section class="section fade-in" id="takeaways">
+    <div class="section-header">
+        <div class="section-tag">Key Takeaways</div>
+        <h2 class="section-title">What This All Means</h2>
+    </div>
+
+    <div class="takeaway-list">
+        <div class="takeaway">
+            <div class="takeaway-num">1</div>
+            <div>
+                <h4>The UAE is the world's PropTech laboratory</h4>
+                <p>With 1,080+ regional attendees and "Expanding to the UAE" as the #1 interest (599 selections), Dubai has cemented its position as the global testing ground for real estate technology.</p>
+            </div>
+        </div>
+        <div class="takeaway">
+            <div class="takeaway-num">2</div>
+            <div>
+                <h4>Capital is following innovation</h4>
+                <p>718 attendees with investment focus, 377 from PE/Family Office backgrounds, and 341 actively seeking startup deals. The money is ready to deploy.</p>
+            </div>
+        </div>
+        <div class="takeaway">
+            <div class="takeaway-num">3</div>
+            <div>
+                <h4>AI is reshaping every layer of real estate</h4>
+                <p>From Facade AI analyzing exteriors to Property GPT generating listings, from SearchSmartly matching buyers to Fixit AI managing maintenance — AI isn't coming. It's here.</p>
+            </div>
+        </div>
+        <div class="takeaway">
+            <div class="takeaway-num">4</div>
+            <div>
+                <h4>Sustainability is non-negotiable</h4>
+                <p>479 ESG-focused selections show green buildings, energy efficiency, and environmental compliance are core business requirements, not nice-to-haves.</p>
+            </div>
+        </div>
+        <div class="takeaway">
+            <div class="takeaway-num">5</div>
+            <div>
+                <h4>Extraordinary founder density</h4>
+                <p>184 founders in the room means PropTech is attracting serious entrepreneurial talent. Combined with investor presence, conditions for rapid innovation are perfect.</p>
+            </div>
+        </div>
+        <div class="takeaway">
+            <div class="takeaway-num">6</div>
+            <div>
+                <h4>The full value chain is engaged</h4>
+                <p>From AWS providing cloud infrastructure to Binghatti developing properties, from MRI Software managing portfolios to Engel & Völkers selling homes — every stakeholder is now a PropTech participant.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+    <p class="section-title" style="font-size: 28px; margin-bottom: 12px;">The future of real estate<br>is being built in tech.</p>
+    <p class="footer-text" style="max-width: 700px; margin: 0 auto 12px; line-height: 1.7;"><strong style="color: var(--gold);">Disclaimer:</strong> This analysis is an independent research effort and is not affiliated with, endorsed by, or produced by the PropTech Connect organizers. All data and insights are based on my own research and analysis of publicly available event information.</p>
+    <div class="hashtags">
+        <span>#PropTech</span> <span>#PropTechConnect2026</span> <span>#RealEstateTechnology</span>
+        <span>#Dubai</span> <span>#UAE</span> <span>#MiddleEast</span> <span>#Startups</span>
+        <span>#AI</span> <span>#Sustainability</span> <span>#ESG</span> <span>#VentureCapital</span>
+        <span>#SmartBuildings</span> <span>#DigitalTransformation</span> <span>#FutureOfRealEstate</span>
+    </div>
+</footer>
+
+<script>
+// ═══════════ CHART.JS DEFAULTS ═══════════
+Chart.defaults.color = '#94A3B8';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(10, 22, 40, 0.95)';
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(0, 212, 255, 0.3)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.cornerRadius = 10;
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.titleFont = { weight: '700' };
+Chart.register(ChartDataLabels);
+
+// ═══════════ COUNTER ANIMATION ═══════════
+function animateCounters() {
+    document.querySelectorAll('.counter').forEach(el => {
+        const target = +el.dataset.target;
+        const duration = 2000;
+        const start = performance.now();
+        function update(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target).toLocaleString();
+            if (progress < 1) requestAnimationFrame(update);
+            else el.textContent = target.toLocaleString();
+        }
+        requestAnimationFrame(update);
+    });
+}
+setTimeout(animateCounters, 400);
+
+// ═══════════ FADE-IN OBSERVER ═══════════
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ═══════════ REGION CHART ═══════════
+new Chart(document.getElementById('regionChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Middle East & UAE', 'Europe', 'North America', 'Asia', 'Africa', 'Oceania', 'Central America', 'South America', 'Caribbean'],
+        datasets: [{
+            data: [1080, 660, 250, 163, 106, 55, 53, 45, 32],
+            backgroundColor: [
+                '#00D4FF', '#FFB800', '#00FF88', '#8B5CF6', '#FF4D6A',
+                '#FF8C42', '#36D6C3', '#E879F9', '#FCD34D'
+            ],
+            borderWidth: 0,
+            hoverOffset: 8
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+            legend: { display: true, position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } } },
+            datalabels: { display: false }
+        }
+    }
+});
+
+// ═══════════ COUNTRY CHART ═══════════
+new Chart(document.getElementById('countryChart'), {
+    type: 'bar',
+    data: {
+        labels: ['UAE', 'UK', 'USA', 'Saudi Arabia', 'India', 'Germany', 'Spain', 'Egypt', 'Netherlands', 'France', 'Qatar', 'Australia', 'Sweden', 'Switzerland', 'Canada'],
+        datasets: [{
+            data: [416, 133, 68, 64, 41, 36, 28, 28, 26, 26, 22, 20, 20, 19, 17],
+            backgroundColor: ctx => {
+                const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+                g.addColorStop(0, 'rgba(0,212,255,0.8)'); g.addColorStop(1, 'rgba(0,212,255,0.2)');
+                return g;
+            },
+            borderRadius: 6, borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 11 } } },
+            y: { grid: { display: false }, ticks: { font: { size: 11, weight: '500' } } }
+        },
+        plugins: { datalabels: { anchor: 'end', align: 'end', color: '#00D4FF', font: { weight: '700', size: 11 }, offset: 4 } }
+    }
+});
+
+// ═══════════ SPEAKER ROLES ═══════════
+new Chart(document.getElementById('speakerRolesChart'), {
+    type: 'bar',
+    data: {
+        labels: ['CEO', 'Managing Director', 'Managing Partner', 'Founder & CEO', 'Founder', 'VP', 'COO', 'Director', 'General Manager'],
+        datasets: [{
+            data: [43, 11, 10, 7, 4, 4, 4, 4, 3],
+            backgroundColor: [
+                '#FFB800', '#FFB800CC', '#FFB800AA', '#FFB80088',
+                '#FFB80077', '#FFB80066', '#FFB80055', '#FFB80044', '#FFB80033'
+            ],
+            borderRadius: 6, borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' } },
+            y: { grid: { display: false }, ticks: { font: { weight: '500' } } }
+        },
+        plugins: { datalabels: { anchor: 'end', align: 'end', color: '#FFB800', font: { weight: '700', size: 11 }, offset: 4 } }
+    }
+});
+
+// ═══════════ SPEAKER COMPANIES ═══════════
+new Chart(document.getElementById('speakerCompaniesChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Knight Frank', 'JLL', 'Danube Properties', 'Allsopp & Allsopp', 'Dubai Holding', 'Expo City', 'C&W CORE', 'Innovo Group', 'AroundTown', 'CBRE'],
+        datasets: [{
+            data: [8, 5, 3, 3, 3, 3, 3, 3, 3, 2],
+            backgroundColor: ctx => {
+                const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+                g.addColorStop(0, 'rgba(139,92,246,0.8)'); g.addColorStop(1, 'rgba(139,92,246,0.2)');
+                return g;
+            },
+            borderRadius: 6, borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' } },
+            y: { grid: { display: false }, ticks: { font: { weight: '500', size: 11 } } }
+        },
+        plugins: { datalabels: { anchor: 'end', align: 'end', color: '#8B5CF6', font: { weight: '700', size: 11 }, offset: 4 } }
+    }
+});
+
+// ═══════════ LEADER BARS (Custom progress bars) ═══════════
+const leaderData = [
+    { label: 'CEO', value: 95, color: '#00D4FF' },
+    { label: 'Managing Director', value: 38, color: '#FFB800' },
+    { label: 'Founder', value: 35, color: '#00FF88' },
+    { label: 'Director', value: 30, color: '#8B5CF6' },
+    { label: 'Managing Partner', value: 25, color: '#FF4D6A' },
+    { label: 'Founder & CEO', value: 23, color: '#00D4FF' },
+    { label: 'BD Manager', value: 23, color: '#FFB800' },
+    { label: 'Co-Founder', value: 20, color: '#00FF88' },
+    { label: 'Partner', value: 14, color: '#8B5CF6' },
+    { label: 'COO', value: 12, color: '#FF4D6A' },
+    { label: 'General Manager', value: 12, color: '#00D4FF' },
+    { label: 'Sales Manager', value: 10, color: '#FFB800' },
+];
+const maxVal = 95;
+const barsContainer = document.getElementById('leaderBars');
+leaderData.forEach((d, i) => {
+    const pct = (d.value / maxVal * 100).toFixed(0);
+    barsContainer.innerHTML += `
+        <div class="progress-row">
+            <div class="progress-label">${d.label}</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" data-width="${pct}%" style="background:${d.color}22; color:${d.color}; border: 1px solid ${d.color}33;"></div>
+            </div>
+            <div class="progress-val" style="color:${d.color}">${d.value}</div>
+        </div>`;
+});
+// Animate bars
+setTimeout(() => {
+    document.querySelectorAll('.progress-bar-fill').forEach(el => { el.style.width = el.dataset.width; });
+}, 600);
+
+// ═══════════ COMPANY SIZE CHART ═══════════
+new Chart(document.getElementById('companySizeChart'), {
+    type: 'polarArea',
+    data: {
+        labels: ['1-10 emp.', '11-50 emp.', '51-200 emp.', '201-500 emp.', '501-1K emp.', '1K-5K emp.', '5K-10K emp.', '10K+ emp.'],
+        datasets: [{
+            data: [44, 67, 40, 19, 11, 7, 2, 4],
+            backgroundColor: [
+                'rgba(0,212,255,0.5)', 'rgba(0,255,136,0.5)', 'rgba(255,184,0,0.5)',
+                'rgba(139,92,246,0.5)', 'rgba(255,77,106,0.5)', 'rgba(255,140,66,0.5)',
+                'rgba(54,214,195,0.5)', 'rgba(252,211,77,0.5)'
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { r: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { display: false } } },
+        plugins: {
+            legend: { display: true, position: 'bottom', labels: { padding: 12, usePointStyle: true, pointStyleWidth: 10, font: { size: 10 } } },
+            datalabels: { color: '#fff', font: { weight: '700', size: 12 }, formatter: v => v }
+        }
+    }
+});
+
+// ═══════════ INTERESTS CHART ═══════════
+new Chart(document.getElementById('interestsChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Expanding to UAE', 'Expanding to ME', 'Residential PM', 'Residential Portfolio', 'Residential Dev', 'Residential Mega', 'PE / Family Office', 'Residential Brokerage', 'Commercial PM', 'Residential Data'],
+        datasets: [{
+            data: [599, 553, 498, 485, 440, 395, 377, 373, 358, 357],
+            backgroundColor: ctx => {
+                const colors = ['#00D4FF','#00D4FFCC','#00FF88','#00FF88CC','#FFB800','#FFB800CC','#8B5CF6','#8B5CF6CC','#FF4D6A','#FF4D6ACC'];
+                return colors[ctx.dataIndex] || '#00D4FF';
+            },
+            borderRadius: 6, borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' }, max: 650 },
+            y: { grid: { display: false }, ticks: { font: { size: 10, weight: '500' } } }
+        },
+        plugins: { datalabels: { anchor: 'end', align: 'end', font: { weight: '700', size: 10 }, color: ctx => {
+            const colors = ['#00D4FF','#00D4FF','#00FF88','#00FF88','#FFB800','#FFB800','#8B5CF6','#8B5CF6','#FF4D6A','#FF4D6A'];
+            return colors[ctx.dataIndex];
+        }, offset: 4 } }
+    }
+});
+
+// ═══════════ INTEREST CATEGORIES ═══════════
+new Chart(document.getElementById('interestCatChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Residential PropTech', 'Geographic Expansion', 'Commercial PropTech', 'Investment & PE', 'Retail & Hospitality', 'ESG & Sustainability', 'Industrial', 'Other'],
+        datasets: [{
+            data: [4231, 1865, 1899, 718, 775, 479, 200, 3052],
+            backgroundColor: ['#00D4FF', '#FFB800', '#8B5CF6', '#00FF88', '#FF4D6A', '#36D6C3', '#FF8C42', '#475569'],
+            borderWidth: 0, hoverOffset: 10
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, cutout: '50%',
+        plugins: {
+            legend: { display: true, position: 'bottom', labels: { padding: 14, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } } },
+            datalabels: { display: false }
+        }
+    }
+});
+
+// ═══════════ STARTUP CATEGORY CHART ═══════════
+new Chart(document.getElementById('startupCatChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Investment & FinTech', 'AI & Intelligence', 'Property Mgmt', 'Data & Analytics', 'Sustainability', '3D & Visualization', 'Brokerage Tech', 'Operations', 'Security & Access', 'Construction', 'Cloud & Infra', 'Other'],
+        datasets: [{
+            data: [14, 11, 11, 8, 8, 7, 6, 6, 5, 5, 5, 9],
+            backgroundColor: [
+                'rgba(255,77,106,0.7)', 'rgba(139,92,246,0.7)', 'rgba(0,212,255,0.7)',
+                'rgba(252,211,77,0.7)', 'rgba(0,255,136,0.7)', 'rgba(255,184,0,0.7)',
+                'rgba(54,214,195,0.7)', 'rgba(255,255,255,0.3)', 'rgba(255,140,66,0.7)',
+                'rgba(232,121,249,0.7)', 'rgba(96,165,250,0.7)', 'rgba(148,163,184,0.5)'
+            ],
+            borderRadius: 6, borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true },
+            y: { grid: { display: false }, ticks: { font: { size: 10, weight: '500' } } }
+        },
+        plugins: { datalabels: { anchor: 'end', align: 'end', color: '#fff', font: { weight: '700', size: 11 }, offset: 4 } }
+    }
+});
+
+// ═══════════ STARTUP FOCUS RADAR ═══════════
+new Chart(document.getElementById('startupFocusChart'), {
+    type: 'radar',
+    data: {
+        labels: ['AI / ML', 'Tokenization', 'IoT / Smart\nBuildings', '3D / VR', 'Data\nAnalytics', 'Sustainability', 'Security', 'Automation', 'Payments\n& FinTech', 'Construction'],
+        datasets: [{
+            label: 'Startups',
+            data: [11, 5, 8, 7, 8, 6, 5, 6, 6, 5],
+            fill: true,
+            backgroundColor: 'rgba(0,212,255,0.12)',
+            borderColor: 'rgba(0,212,255,0.7)',
+            borderWidth: 2,
+            pointBackgroundColor: '#00D4FF',
+            pointRadius: 4,
+            pointHoverRadius: 6
+        }, {
+            label: 'Investment Interest',
+            data: [9, 8, 5, 4, 7, 6, 3, 3, 8, 4],
+            fill: true,
+            backgroundColor: 'rgba(255,184,0,0.08)',
+            borderColor: 'rgba(255,184,0,0.6)',
+            borderWidth: 2,
+            pointBackgroundColor: '#FFB800',
+            pointRadius: 4,
+            pointHoverRadius: 6
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+            r: {
+                grid: { color: 'rgba(255,255,255,0.06)' },
+                angleLines: { color: 'rgba(255,255,255,0.06)' },
+                ticks: { display: false },
+                pointLabels: { color: '#94A3B8', font: { size: 10, weight: '500' } },
+                suggestedMin: 0, suggestedMax: 12
+            }
+        },
+        plugins: {
+            legend: { display: true, position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } } },
+            datalabels: { display: false }
+        }
+    }
+});
+
+// ═══════════ STARTUP FILTER TABS ═══════════
+document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+        document.querySelectorAll('.startup-category').forEach(cat => {
+            if (filter === 'all' || cat.dataset.cat === filter) {
+                cat.style.display = 'block';
+                cat.style.animation = 'fadeInUp 0.4s ease';
+            } else {
+                cat.style.display = 'none';
+            }
+        });
+    });
+});
+
+// ═══════════ SPONSOR CHART ═══════════
+new Chart(document.getElementById('sponsorChart'), {
+    type: 'bar',
+    data: {
+        labels: ['PropTech Platforms', 'AI & Data', 'Smart Buildings & IoT', 'Investment & FinTech', 'Innovation Hubs', 'Real Estate Dev', 'Sustainability', '3D & Visualization', 'Operations & Logistics', 'Cloud & Infrastructure'],
+        datasets: [{
+            data: [18, 14, 12, 11, 10, 8, 7, 6, 6, 6],
+            backgroundColor: [
+                'rgba(0,212,255,0.7)', 'rgba(139,92,246,0.7)', 'rgba(0,255,136,0.7)',
+                'rgba(255,184,0,0.7)', 'rgba(255,77,106,0.7)', 'rgba(255,140,66,0.7)',
+                'rgba(54,214,195,0.7)', 'rgba(232,121,249,0.7)', 'rgba(252,211,77,0.7)',
+                'rgba(148,163,184,0.7)'
+            ],
+            borderRadius: 8, borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true },
+            x: { grid: { display: false }, ticks: { font: { size: 10, weight: '500' }, maxRotation: 45 } }
+        },
+        plugins: {
+            datalabels: { anchor: 'end', align: 'end', color: '#fff', font: { weight: '700', size: 12 }, offset: 2 }
+        }
+    }
+});
+
+// ═══════════ INTERACTIVE WORLD MAP (Canvas + TopoJSON) ═══════════
+(function() {
+    const canvas = document.getElementById('worldMapCanvas');
+    const tooltip = document.getElementById('mapTooltip');
+    const mapContainer = document.getElementById('mapContainer');
+    const ctx = canvas.getContext('2d');
+
+    // Visible lat/lng bounds — cropped to remove empty polar regions
+    const LAT_MIN = -55, LAT_MAX = 72;
+    const LNG_MIN = -170, LNG_MAX = 180;
+
+    // Attendee data: [lng, lat, count, name, labelDir]
+    // labelDir: 'r'=right, 'l'=left, 'b'=below, 'a'=above (controls label placement)
+    const cities = [
+        [54.37, 24.45, 416, 'UAE', 'r'],
+        [46.68, 24.71, 64, 'Saudi Arabia', 'l'],
+        [51.53, 25.29, 22, 'Qatar', 'b'],
+        [58.54, 23.61, 17, 'Oman', 'r'],
+        [50.55, 26.07, 10, 'Bahrain', null],
+        [35.24, 31.95, 8, 'Jordan', null],
+        [45.38, 33.31, 5, 'Iraq', null],
+        [47.98, 29.37, 6, 'Kuwait', null],
+        [-0.12, 51.51, 133, 'United Kingdom', 'l'],
+        [10.45, 51.17, 36, 'Germany', 'r'],
+        [-3.70, 40.42, 28, 'Spain', 'l'],
+        [4.90, 52.37, 26, 'Netherlands', null],
+        [2.35, 48.86, 26, 'France', null],
+        [18.07, 59.33, 20, 'Sweden', 'r'],
+        [8.54, 47.38, 19, 'Switzerland', null],
+        [12.50, 41.90, 16, 'Italy', null],
+        [21.01, 52.23, 15, 'Poland', null],
+        [-9.14, 38.74, 15, 'Portugal', null],
+        [12.57, 55.68, 14, 'Denmark', null],
+        [10.75, 59.91, 14, 'Norway', null],
+        [24.94, 60.17, 10, 'Finland', null],
+        [-6.26, 53.35, 9, 'Ireland', null],
+        [23.73, 37.98, 7, 'Greece', null],
+        [14.42, 50.08, 8, 'Czech Rep.', null],
+        [19.04, 47.50, 6, 'Hungary', null],
+        [16.37, 48.21, 7, 'Austria', null],
+        [26.10, 44.43, 5, 'Romania', null],
+        [-98.58, 39.83, 68, 'United States', 'l'],
+        [-106.35, 56.13, 17, 'Canada', 'l'],
+        [-99.13, 19.43, 8, 'Mexico', null],
+        [31.24, 30.04, 28, 'Egypt', 'r'],
+        [-6.84, 34.02, 9, 'Morocco', null],
+        [3.39, 6.52, 10, 'Nigeria', null],
+        [36.82, -1.29, 8, 'Kenya', null],
+        [28.05, -26.20, 7, 'South Africa', null],
+        [72.88, 19.08, 41, 'India', 'r'],
+        [103.82, 1.35, 12, 'Singapore', null],
+        [116.41, 39.90, 10, 'China', null],
+        [139.69, 35.69, 8, 'Japan', 'r'],
+        [100.50, 13.76, 8, 'Thailand', null],
+        [126.98, 37.57, 6, 'South Korea', null],
+        [106.85, -6.21, 5, 'Indonesia', null],
+        [101.69, 3.14, 5, 'Malaysia', null],
+        [151.21, -33.87, 20, 'Australia', 'r'],
+        [174.78, -41.29, 6, 'New Zealand', null],
+        [-43.17, -22.91, 12, 'Brazil', 'l'],
+        [-58.38, -34.60, 5, 'Argentina', null],
+        [-74.07, 4.71, 6, 'Colombia', null],
+        [-77.03, -12.05, 3, 'Peru', null],
+    ];
+
+    let dotPositions = [];
+    let geoData = null;
+
+    // Mercator projection cropped to visible bounds
+    function toMerc(lat) {
+        const r = lat * Math.PI / 180;
+        return Math.log(Math.tan(Math.PI / 4 + r / 2));
+    }
+    const mercMin = toMerc(LAT_MIN), mercMax = toMerc(LAT_MAX);
+
+    function project(lng, lat, w, h) {
+        const x = ((lng - LNG_MIN) / (LNG_MAX - LNG_MIN)) * w;
+        const merc = toMerc(Math.max(LAT_MIN, Math.min(LAT_MAX, lat)));
+        const y = h - ((merc - mercMin) / (mercMax - mercMin)) * h;
+        return [x, y];
+    }
+
+    function resize() {
+        const rect = mapContainer.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { w: rect.width, h: rect.height };
+    }
+
+    function drawRing(ring, w, h) {
+        ctx.beginPath();
+        ring.forEach(([lng, lat], i) => {
+            // Clamp latitude to visible bounds (don't skip — keeps paths connected)
+            const clampedLat = Math.max(LAT_MIN, Math.min(LAT_MAX, lat));
+            const [x, y] = project(lng, clampedLat, w, h);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+    }
+
+    function draw() {
+        const { w, h } = resize();
+        ctx.fillStyle = '#0A1628';
+        ctx.fillRect(0, 0, w, h);
+
+        // Draw countries (skip Antarctica id=010)
+        if (geoData) {
+            geoData.features.forEach(feature => {
+                if (feature.id === '010') return; // Antarctica
+                const geom = feature.geometry;
+                if (!geom) return;
+                const polys = geom.type === 'Polygon' ? [geom.coordinates] : (geom.type === 'MultiPolygon' ? geom.coordinates : []);
+                polys.forEach(polygon => {
+                    // Outer ring = fill, inner rings = holes (ignored for simplicity)
+                    const ring = polygon[0];
+                    if (!ring || ring.length < 3) return;
+                    drawRing(ring, w, h);
+                    ctx.closePath();
+                    ctx.fillStyle = 'rgba(148, 163, 184, 0.08)';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(148, 163, 184, 0.15)';
+                    ctx.lineWidth = 0.4;
+                    ctx.stroke();
+                });
+            });
+        }
+
+        // Connection lines from Dubai
+        const [dx, dy] = project(55.27, 25.20, w, h);
+        [[-0.12,51.51],[-98.58,39.83],[72.88,19.08],[151.21,-33.87],[-43.17,-22.91],[3.39,6.52],[139.69,35.69],[18.07,59.33]]
+        .forEach(([lng, lat]) => {
+            const [tx, ty] = project(lng, lat, w, h);
+            const grad = ctx.createLinearGradient(dx, dy, tx, ty);
+            grad.addColorStop(0, 'rgba(0,212,255,0.18)');
+            grad.addColorStop(1, 'rgba(0,212,255,0.0)');
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 0.7;
+            ctx.setLineDash([3, 6]);
+            ctx.beginPath(); ctx.moveTo(dx, dy); ctx.lineTo(tx, ty); ctx.stroke();
+            ctx.setLineDash([]);
+        });
+
+        // Draw city dots (largest first so small dots are on top)
+        dotPositions = [];
+        const sorted = [...cities].sort((a, b) => b[2] - a[2]);
+        sorted.forEach(([lng, lat, count, name, labelDir]) => {
+            const [x, y] = project(lng, lat, w, h);
+            const r = Math.max(2, Math.min(18, Math.sqrt(count) * 1.3));
+
+            // Glow
+            const glow = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
+            glow.addColorStop(0, 'rgba(0,212,255,0.20)');
+            glow.addColorStop(0.5, 'rgba(0,212,255,0.04)');
+            glow.addColorStop(1, 'rgba(0,212,255,0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath(); ctx.arc(x, y, r * 3, 0, Math.PI * 2); ctx.fill();
+
+            // Dot
+            const dot = ctx.createRadialGradient(x, y, 0, x, y, r);
+            dot.addColorStop(0, 'rgba(0,240,255,0.95)');
+            dot.addColorStop(0.6, 'rgba(0,210,245,0.8)');
+            dot.addColorStop(1, 'rgba(0,160,200,0.35)');
+            ctx.fillStyle = dot;
+            ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+
+            // Center highlight
+            ctx.fillStyle = 'rgba(255,255,255,0.6)';
+            ctx.beginPath(); ctx.arc(x, y, r * 0.2, 0, Math.PI * 2); ctx.fill();
+
+            dotPositions.push({ x, y, r: Math.max(r, 10), name, count });
+        });
+
+        // Draw labels AFTER all dots (so labels are on top)
+        const fs = Math.max(9, Math.min(11, w / 110));
+        const placedLabels = []; // collision avoidance
+
+        sorted.forEach(([lng, lat, count, name, labelDir]) => {
+            if (!labelDir) return; // only label cities with explicit direction
+            const [x, y] = project(lng, lat, w, h);
+            const r = Math.max(2, Math.min(18, Math.sqrt(count) * 1.3));
+
+            ctx.font = `600 ${fs}px Inter, sans-serif`;
+            const tm = ctx.measureText(name);
+            const tw = tm.width + 10;
+            const th = fs + 6;
+
+            let lx, ly;
+            if (labelDir === 'l') { lx = x - r - tw - 2; ly = y - th / 2; }
+            else if (labelDir === 'a') { lx = x - tw / 2; ly = y - r - th - 2; }
+            else if (labelDir === 'b') { lx = x - tw / 2; ly = y + r + 4; }
+            else { lx = x + r + 4; ly = y - th / 2; } // 'r' default
+
+            // Check collision
+            const rect = { x: lx, y: ly, w: tw, h: th };
+            const collides = placedLabels.some(p =>
+                !(rect.x + rect.w < p.x || rect.x > p.x + p.w || rect.y + rect.h < p.y || rect.y > p.y + p.h)
+            );
+            if (collides) return;
+            placedLabels.push(rect);
+
+            // Draw background pill
+            ctx.fillStyle = 'rgba(10, 22, 40, 0.8)';
+            ctx.beginPath();
+            ctx.roundRect(lx, ly, tw, th, 4);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,212,255,0.15)';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+
+            // Draw text
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(name, lx + 5, ly + th / 2);
+        });
+
+        // Region summary badges
+        const regions = [
+            { n: '1,080+', sub: 'Middle East & UAE', lng: 42, lat: 12, c: '#00D4FF' },
+            { n: '660+', sub: 'Europe', lng: -18, lat: 62, c: '#FFB800' },
+            { n: '250+', sub: 'North America', lng: -130, lat: 50, c: '#00FF88' },
+            { n: '163+', sub: 'Asia', lng: 90, lat: 55, c: '#8B5CF6' },
+            { n: '106+', sub: 'Africa', lng: 8, lat: -20, c: '#FF4D6A' },
+        ];
+        const bfs = Math.max(11, Math.min(14, w / 80));
+        regions.forEach(({ n, sub, lng, lat, c }) => {
+            const [x, y] = project(lng, lat, w, h);
+            ctx.font = `800 ${bfs}px Inter, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            const tw1 = ctx.measureText(n).width;
+            ctx.font = `500 ${bfs * 0.7}px Inter, sans-serif`;
+            const tw2 = ctx.measureText(sub).width;
+            const bw = Math.max(tw1, tw2) + 20;
+            const bh = bfs * 2 + 10;
+
+            // Background
+            ctx.fillStyle = 'rgba(10,22,40,0.75)';
+            ctx.beginPath();
+            ctx.roundRect(x - bw / 2, y - 2, bw, bh, 6);
+            ctx.fill();
+            ctx.strokeStyle = c + '30';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Number
+            ctx.fillStyle = c;
+            ctx.font = `800 ${bfs}px Inter, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText(n, x, y + 2);
+
+            // Sub label
+            ctx.fillStyle = 'rgba(255,255,255,0.55)';
+            ctx.font = `500 ${bfs * 0.7}px Inter, sans-serif`;
+            ctx.fillText(sub, x, y + bfs + 4);
+        });
+    }
+
+    // Load real world map from CDN
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+        .then(r => r.json())
+        .then(topo => {
+            geoData = topojson.feature(topo, topo.objects.countries);
+            draw();
+        })
+        .catch(() => draw());
+
+    draw();
+    let resizeTimer;
+    window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(draw, 100); });
+
+    // Hover
+    canvas.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+        let found = false;
+        for (const d of dotPositions) {
+            if (Math.hypot(mx - d.x, my - d.y) < d.r + 8) {
+                tooltip.innerHTML = `<span class="country">${d.name}</span><br><span class="count">${d.count} attendees</span>`;
+                tooltip.style.left = (d.x + d.r + 12) + 'px';
+                tooltip.style.top = (d.y - 18) + 'px';
+                tooltip.style.opacity = '1';
+                canvas.style.cursor = 'pointer';
+                found = true; break;
+            }
+        }
+        if (!found) { tooltip.style.opacity = '0'; canvas.style.cursor = 'default'; }
+    });
+    canvas.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+})();
+
+// ═══════════ PROGRESS BAR RE-TRIGGER ON SCROLL ═══════════
+const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.querySelectorAll('.progress-bar-fill').forEach(el => {
+                el.style.width = el.dataset.width;
+            });
+        }
+    });
+}, { threshold: 0.3 });
+const leaderSection = document.getElementById('leaders');
+if (leaderSection) barObserver.observe(leaderSection);
+
+</script>
+</body>
+</html>
