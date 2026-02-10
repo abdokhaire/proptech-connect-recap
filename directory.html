@@ -356,7 +356,7 @@ select:focus{border-color:var(--accent)}
     <nav class="nav-tabs">
       <a href="directory.html" class="nav-tab active">Attendees</a>
       <a href="companies.html" class="nav-tab">Companies</a>
-      <a href="#sponsors-section" class="nav-tab" onclick="document.getElementById('sponsors-section').scrollIntoView({behavior:'smooth'});return false;">Sponsors & Startups</a>
+      <a href="#sponsors-section" class="nav-tab" onclick="document.getElementById('sponsors-section').scrollIntoView({behavior:'smooth'});return false;">Sponsors &amp; Startups</a>
     </nav>
     <div class="stats-row">
       <div class="stat"><span class="stat-num" id="statTotal">1,675</span><span class="stat-label">Attendees</span></div>
@@ -511,13 +511,13 @@ select:focus{border-color:var(--accent)}
     <div class="sp-header">
       <h2 class="sp-title">Sponsors & Startups Directory</h2>
       <p class="sp-subtitle">Detailed profiles with websites, social media, and descriptions — data from Brella API</p>
-      <div class="sp-tabs">
-        <button class="sp-tab active" onclick="document.getElementById('sponsorGrid').style.display='grid';document.getElementById('startupGrid').style.display='none';this.classList.add('active');this.nextElementSibling.classList.remove('active');">Sponsors <span class="sp-tab-count">50</span></button>
-        <button class="sp-tab" onclick="document.getElementById('startupGrid').style.display='grid';document.getElementById('sponsorGrid').style.display='none';this.classList.add('active');this.previousElementSibling.classList.remove('active');">Startups <span class="sp-tab-count">45</span></button>
+      <div class="sp-tabs" id="spTabs">
+        <button class="sp-tab active" id="spTabSponsors" data-target="sponsorGrid">Sponsors <span class="sp-tab-count">50</span></button>
+        <button class="sp-tab" id="spTabStartups" data-target="startupGrid">Startups <span class="sp-tab-count">45</span></button>
       </div>
       <div class="sp-search-box">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="spSearchInput" placeholder="Search sponsors & startups..." oninput="filterSpCards(this.value)">
+        <input type="text" id="spSearchInput" placeholder="Search sponsors & startups...">
       </div>
     </div>
     <div id="sponsorGrid" class="sp-detail-grid">
@@ -2577,15 +2577,34 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLight
 
 
 
+// Sponsors & Startups tab switching
+document.querySelectorAll('#spTabs .sp-tab').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var target = this.getAttribute('data-target');
+    document.getElementById('sponsorGrid').style.display = 'none';
+    document.getElementById('startupGrid').style.display = 'none';
+    document.getElementById(target).style.display = 'grid';
+    document.querySelectorAll('#spTabs .sp-tab').forEach(function(b) { b.classList.remove('active'); });
+    this.classList.add('active');
+    // Re-apply search filter
+    var searchVal = document.getElementById('spSearchInput').value;
+    if (searchVal) filterSpCards(searchVal);
+  });
+});
+
+// Search within sponsor/startup cards
+document.getElementById('spSearchInput').addEventListener('input', function() {
+  filterSpCards(this.value);
+});
+
 function filterSpCards(query) {
-  const q = query.toLowerCase().trim();
-  const sponsorGrid = document.getElementById('sponsorGrid');
-  const startupGrid = document.getElementById('startupGrid');
-  [sponsorGrid, startupGrid].forEach(grid => {
+  var q = query.toLowerCase().trim();
+  var grids = [document.getElementById('sponsorGrid'), document.getElementById('startupGrid')];
+  grids.forEach(function(grid) {
     if (grid.style.display === 'none') return;
-    const cards = grid.querySelectorAll('.sp-detail-card');
-    cards.forEach(card => {
-      card.style.display = !q || card.textContent.toLowerCase().includes(q) ? '' : 'none';
+    var cards = grid.querySelectorAll('.sp-detail-card');
+    cards.forEach(function(card) {
+      card.style.display = (!q || card.textContent.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
     });
   });
 }
